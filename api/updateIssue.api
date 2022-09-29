@@ -1,0 +1,22 @@
+curl -s --request POST \
+  --url "$URL/issue/$issueID/comment" \
+  --user  "$EMAIL:$TOKEN" \
+  --header 'Accept: application/json' \
+  --header 'Content-Type: application/json' \
+  --data "{
+   \"body\": {
+            \"type\": \"doc\",
+            \"version\": 1,
+            \"content\": [
+              {
+                \"type\": \"paragraph\",
+                \"content\": [
+                  {
+                    \"text\": \"$COMMENT\",
+                    \"type\": \"text\"
+                  }
+                ]
+              }
+            ]
+          }
+}"

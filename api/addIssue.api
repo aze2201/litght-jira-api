@@ -1,0 +1,40 @@
+curl --request POST \
+  --url $URL/issue \
+  --user "$EMAIL:$TOKEN" \
+  --header 'Accept: application/json' \
+  --header 'Content-Type: application/json' \
+  --data "{ 
+  \"update\": {},                                          
+  \"fields\": {   
+    \"summary\": \"$MESSAGE\",                          
+    \"issuetype\": {
+      \"id\": \"$ISSUE_TYPE\"
+    },
+    \"project\": {
+      \"id\": \"$PROJECT_KEY\"
+    },
+    \"description\": {
+      \"type\": \"doc\",
+      \"version\": 1,
+      \"content\": [
+        {
+          \"type\": \"paragraph\",
+          \"content\": [
+            {
+              \"text\": \"$COMMENT\",
+              \"type\": \"text\"
+            }
+          ]
+        }
+      ]
+    },
+	  \"assignee\": {
+      \"accountId\": \"$ACCOUNTID\",
+	  \"emailAddress\":\"$EMAIL\",
+	  \"displayName\":\"$FULL_NAME\",
+	  \"active\":true,
+      \"timeZone\":\"Europe/Berlin\",
+      \"accountType\":\"atlassian\"
+    }
+  }
+}"

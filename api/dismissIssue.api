@@ -1,0 +1,33 @@
+curl -s --request POST \
+  --url "$URL/issue/$issueID/transitions" \
+  --user  "$EMAIL:$TOKEN" \
+  --header 'Accept: application/json' \
+  --header 'Content-Type: application/json' \
+  --data "{
+  \"update\": {
+    \"comment\": [
+      {
+        \"add\": {
+          \"body\": {
+            \"type\": \"paragraph\",
+            \"version\": 1,
+            \"content\": [
+              {
+                \"type\": \"paragraph\",
+                \"content\": [
+                  {
+                    \"text\": \"$COMMENT\",
+                    \"type\": \"text\"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  \"transition\": {
+    \"id\": \"91\"
+  }
+}"

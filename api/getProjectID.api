@@ -1,0 +1,4 @@
+curl -s    --url "$URL/project"   \
+	--user "$EMAIL:$TOKEN"    \
+	--header 'Accept: application/json'   \
+	--header 'Content-Type: application/json' | jq '.[] | select(.key=="$PROJECT_KEY")' | jq .id
