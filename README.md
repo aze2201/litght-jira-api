@@ -1,4 +1,4 @@
-# LIMITED OPERAIONS WITH JIRA API V3
+# Limited operations via Jira API v3
 
 Author: Fariz Muradov
 
