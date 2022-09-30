@@ -118,7 +118,9 @@ initDB() {
 
 checkTicketExist() {
 	issueID=$(echo "select issueID from issues where issueSummary=\"$MESSAGE\" ORDER by 1 DESC LIMIT 1 ;" | sqlite3 $data)
-	[ $? -ne 0 ] && echo "ERROR| $(date)| Somehow reading database is ERROR" >> $logFile ; exit 1
+	ret=$?
+	[ $ret -ne 0 ] && echo "ERROR| $(date)| Somehow reading database is ERROR" >> $logFile ;
+	[ $ret -ne 0 ] && exit 1
 	[ ${#issueID} -eq 0 ] && issueID=0		# * no ticket exist. Need to create
 	if  [ ${#issueID} -ge 5 ] && 
 		[[ ${issueID} == ?(-)+([[:digit:]]) ]]; then
@@ -145,6 +147,7 @@ main() {
 	installPackages
 	initDB
 	export issueID=$(checkTicketExist)
+	echo "Here is issueID: $issueID"
 	if		[ $issueID -eq 0 ] && [ $DISMISS -ne 1 ]; then
 				# * It means ticket is not exist. 
 				# * I am going to add Ticket and save return data to database
