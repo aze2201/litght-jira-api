@@ -2,7 +2,7 @@
 
 Author: Fariz Muradov
 
-Mail: fariz.muradov@inno2grid.com
+Mail: fariz.muradov90@gmail.com, aze2201@gmail.com
 
 
 ```
@@ -21,12 +21,12 @@ Mail: fariz.muradov@inno2grid.com
 ```
 ./main.sh \
         -a "<accountID> " \
-        -e "fariz.muradov@inno2grid.com" \
+        -e "aze2201@gmail.com" \
         -N "Fariz Muradov"
         -t "<Token>" \
         -I "<IssueTypeID>" \
         -P "<ProjectI?D>" \
-        -U "https://inno2grid.atlassian.net/rest/api/3/issue/17058" \
+        -U "<JIRA URL>/rest/api/3/issue/17058" \
         -C "Cpu is very high on device. More than 90%" \
         -d 0 \
         -m "HIGH CPU on IoT sensor: DeviceN"
