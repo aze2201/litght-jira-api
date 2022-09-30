@@ -58,7 +58,7 @@ $ curl -s --url "https://<JIRA URL>/rest/api/3/project/<PROJECT ID>" \
  On browser or curl (via auth):
 
 ```
- https://<JIRA URL>/rest/api/latest/user/search?query=fariz.muradov@inno2grid.com
+ https://<JIRA URL>/rest/api/latest/user/search?query=<JIRA EMAIL>
 ```
 
 ## License
