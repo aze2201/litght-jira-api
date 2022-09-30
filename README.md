@@ -7,21 +7,13 @@ Mail: fariz.muradov@inno2grid.com
 
 ```
 -a              Account ID
-
 -N              Full Name, this ususally need when you make ticket
-
 -e              Owner Jira email
-
 -t              Owner Jira token
-
 -I              Issue type on Jira. i.e Task
-
 -P              Project ID on Jira
-
 -U              URL of issue
-
 -C              Comment on Jira ticket
-
 -d              Dismiss flag 0 or 1. If -d 1 then provided ticket will dismissed
 ```
 
