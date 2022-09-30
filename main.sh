@@ -97,12 +97,12 @@ helpFunction() {
 }
 
 # /*	If any of above variable is not set, then help Function will execute.
-if	[ -z "$ACCOUNTID" ]	||
-	[ -z "$FULL_NAME" ]	||
-	[ -z "$ISSUE_TYPE" ]	||
-	[ -z "$PROJECT_KEY" ]	||
-	[ -z "$EMAIL" ]		||
-	[ -z "$TOKEN" ]		||
+if	[ -z "$ACCOUNTID" ]		||
+	[ -z "$FULL_NAME" ]		||
+	[ -z "$ISSUE_TYPE" ]		||
+	[ -z "$PROJECT_KEY" ]		||
+	[ -z "$EMAIL" ]			||
+	[ -z "$TOKEN" ]			||
 	[ -z "$URL" ]			||
 	[ -z "$COMMENT" ]		||
 	[ -z "$DISMISS" ]; then
@@ -120,7 +120,7 @@ checkTicketExist() {
 	issueID=$(echo "select issueID from issues where issueSummary=\"$MESSAGE\" ORDER by 1 DESC LIMIT 1 ;" | sqlite3 $data)
 	ret=$?
 	[ $ret -ne 0 ] && echo "ERROR| $(date)| Somehow reading database is ERROR" >> $logFile ;
-	[ $ret -ne 0 ] && exit 1
+	[ $ret -ne 0 ] && exit 1    # /* Log and exit. Bash cannot manage Ternary Operator like C progrmming.
 	[ ${#issueID} -eq 0 ] && issueID=0		# * no ticket exist. Need to create
 	if  [ ${#issueID} -ge 5 ] && 
 		[[ ${issueID} == ?(-)+([[:digit:]]) ]]; then
