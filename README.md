@@ -17,7 +17,7 @@ Mail: aze2201@gmail.com
 -d              Dismiss flag 0 or 1. If -d 1 then provided ticket will dismissed
 ```
 
-### EXAMPLE:
+### Example:
 ```
 ./main.sh \
         -a "<accountID> " \
