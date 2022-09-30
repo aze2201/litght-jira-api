@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 curr=$(pwd)
 data=$curr/data/issues.db
@@ -10,7 +10,7 @@ while getopts "a:N:e:m:t:I:P:c:d:U:C:" opt; do
     case $opt in
 		a)	ACCOUNTID="$OPTARG"
 			;;
-		N)  FULL_NAME="$OPTARG"
+		N)	FULL_NAME="$OPTARG"
 			;;
 		e)	EMAIL="$OPTARG"
 			;;
@@ -18,7 +18,7 @@ while getopts "a:N:e:m:t:I:P:c:d:U:C:" opt; do
 			;;
 		t)	TOKEN="$OPTARG"
 			;;
-		I)  ISSUE_TYPE="$OPTARG"
+		I)	ISSUE_TYPE="$OPTARG"
 			;;
 		P)	PROJECT_KEY="$OPTARG"
 			;;
@@ -28,7 +28,7 @@ while getopts "a:N:e:m:t:I:P:c:d:U:C:" opt; do
 			;;
 		d)	DISMISS="$OPTARG"
 			;;
-		h)  helpFlag="$OPTARG"
+		h)	helpFlag="$OPTARG"
 			;;
     esac
 done
@@ -146,8 +146,8 @@ main() {
 	# Main scenario here.
 	installPackages
 	initDB
-	export issueID=$(checkTicketExist)
-	echo "Here is issueID: $issueID"
+	export issueID=$(checkTicketExist)   # /* Get issueID via -m argument. where issueSummary=$m
+
 	if		[ $issueID -eq 0 ] && [ $DISMISS -ne 1 ]; then
 				# * It means ticket is not exist. 
 				# * I am going to add Ticket and save return data to database
