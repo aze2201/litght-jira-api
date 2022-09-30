@@ -2,7 +2,7 @@
 
 Author: Fariz Muradov
 
-Mail: fariz.muradov90@gmail.com, aze2201@gmail.com
+Mail: aze2201@gmail.com
 
 
 ```
