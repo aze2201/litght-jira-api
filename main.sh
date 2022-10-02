@@ -6,7 +6,7 @@ logFile=$curr/logs/$(date "+%Y%m%d")_jira_api.log
 if [ ! -d "$curr/logs" ]; then mkdir $curr/logs; fi
 
 
-while getopts "a:N:e:m:t:I:P:c:d:U:C:" opt; do
+while getopts "a:N:e:m:t:I:P:c:d:U:C:h:" opt; do
     case $opt in
 		a)	ACCOUNTID="$OPTARG"
 			;;
