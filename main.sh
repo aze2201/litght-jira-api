@@ -120,8 +120,9 @@ checkTicketExist() {
 	issueID=$(echo "select issueID from issues where issueSummary=\"$MESSAGE\" ORDER by 1 DESC LIMIT 1 ;" | sqlite3 $data)
 	ret=$?
 	[ $ret -ne 0 ] && echo "ERROR| $(date)| Somehow reading database is ERROR" >> $logFile ;
-	[ $ret -ne 0 ] && exit 1    # /* Log and exit. Bash cannot manage Ternary Operator like C progrmming.
-	[ ${#issueID} -eq 0 ] && issueID=0		# * no ticket exist. Need to create
+	[ $ret -ne 0 ] && exit 1
+	[ "$issueID" == "null" ] && issueID=0           # /* Act based on return message from SQLITE   
+	[ ${#issueID} -eq 0 ] && issueID=0		# /* no ticket exist. Need to create
 	if  [ ${#issueID} -ge 5 ] && 
 		[[ ${issueID} == ?(-)+([[:digit:]]) ]]; then
 			issueID=$issueID                           	 
