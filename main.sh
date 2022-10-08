@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 curr=$(pwd)
 data=$curr/data/issues.db
@@ -6,11 +6,11 @@ logFile=$curr/logs/$(date "+%Y%m%d")_jira_api.log
 if [ ! -d "$curr/logs" ]; then mkdir $curr/logs; fi
 
 
-while getopts "a:N:e:m:t:I:P:c:d:U:C:h:" opt; do
+while getopts "a:N:e:m:t:I:P:c:d:U:C:" opt; do
     case $opt in
 		a)	ACCOUNTID="$OPTARG"
 			;;
-		N)	FULL_NAME="$OPTARG"
+		N)  FULL_NAME="$OPTARG"
 			;;
 		e)	EMAIL="$OPTARG"
 			;;
@@ -18,7 +18,7 @@ while getopts "a:N:e:m:t:I:P:c:d:U:C:h:" opt; do
 			;;
 		t)	TOKEN="$OPTARG"
 			;;
-		I)	ISSUE_TYPE="$OPTARG"
+		I)  ISSUE_TYPE="$OPTARG"
 			;;
 		P)	PROJECT_KEY="$OPTARG"
 			;;
@@ -28,7 +28,7 @@ while getopts "a:N:e:m:t:I:P:c:d:U:C:h:" opt; do
 			;;
 		d)	DISMISS="$OPTARG"
 			;;
-		h)	helpFlag="$OPTARG"
+		h)  helpFlag="$OPTARG"
 			;;
     esac
 done
@@ -39,11 +39,12 @@ export FULL_NAME=$FULL_NAME
 export ISSUE_TYPE=$ISSUE_TYPE
 export PROJECT_KEY=$PROJECT_KEY
 export EMAIL=$EMAIL
-export MESSAGE=$MESSAGE
 export TOKEN=$TOKEN
 export URL=$URL
-export COMMENT=$COMMENT
 export DISMISS=$DISMISS
+export MESSAGE=$(echo ${MESSAGE}| base64 -d)
+export COMMENT=$(echo ${COMMENT}| base64 -d)
+
 
 helpFunction() {
 	echo ""
@@ -97,12 +98,12 @@ helpFunction() {
 }
 
 # /*	If any of above variable is not set, then help Function will execute.
-if	[ -z "$ACCOUNTID" ]		||
-	[ -z "$FULL_NAME" ]		||
-	[ -z "$ISSUE_TYPE" ]		||
-	[ -z "$PROJECT_KEY" ]		||
-	[ -z "$EMAIL" ]			||
-	[ -z "$TOKEN" ]			||
+if	[ -z "$ACCOUNTID" ]	||
+	[ -z "$FULL_NAME" ]	||
+	[ -z "$ISSUE_TYPE" ]	||
+	[ -z "$PROJECT_KEY" ]	||
+	[ -z "$EMAIL" ]		||
+	[ -z "$TOKEN" ]		||
 	[ -z "$URL" ]			||
 	[ -z "$COMMENT" ]		||
 	[ -z "$DISMISS" ]; then
@@ -121,8 +122,8 @@ checkTicketExist() {
 	ret=$?
 	[ $ret -ne 0 ] && echo "ERROR| $(date)| Somehow reading database is ERROR" >> $logFile ;
 	[ $ret -ne 0 ] && exit 1
-	[ "$issueID" == "null" ] && issueID=0           # /* Act based on return message from SQLITE   
-	[ ${#issueID} -eq 0 ] && issueID=0		# /* no ticket exist. Need to create
+	[ "$issueID" == "null" ] && issueID=0
+	[ ${#issueID} -eq 0 ] && issueID=0		# * no ticket exist. Need to create
 	if  [ ${#issueID} -ge 5 ] && 
 		[[ ${issueID} == ?(-)+([[:digit:]]) ]]; then
 			issueID=$issueID                           	 
@@ -147,37 +148,36 @@ main() {
 	# Main scenario here.
 	installPackages
 	initDB
-	export issueID=$(checkTicketExist)   # /* Get issueID via -m argument. where issueSummary=$m
-
+	export issueID=$(checkTicketExist)
+	echo "Here is issueID: $issueID"
 	if		[ $issueID -eq 0 ] && [ $DISMISS -ne 1 ]; then
-				# * It means ticket is not exist. 
-				# * I am going to add Ticket and save return data to database
-				returnData=$(${curr}/api/addIssue.api)  		 		# * Send Add Ticket to API
-					issueID=$(echo ${returnData}	| jq .id -r)		# * get IssueID. It needs for build URL for other API.
-					key=$(echo ${returnData}		| jq .key -r)		# * Not necessary. I don't know why I am extracting.
-					issueLink=$(echo ${returnData}	| jq .self -r)		# * This is will return api link of ticket
+				# /* It means ticket is not exist. 
+				# /* I am going to add Ticket and save return data to database
+				returnData=$(${curr}/api/addIssue.api)				# /* Send Add Ticket to API
+					issueID=$(echo ${returnData}	| jq .id -r)		# /* get IssueID. It needs for build URL for other API.
+					key=$(echo ${returnData}	| jq .key -r)   	# /* Not necessary. I don't know why I am extracting.
+					issueLink=$(echo ${returnData}	| jq .self -r)		# /* This is will return api link of ticket
 				echo	"insert into issues \
-								(issueID,issueSummary,issueName,key) \
+								(issueID,issueComment,issueSummary,issueName,key) \
 						values \
-								(\"$issueID\",\"$MESSAGE\",\"$issueLink\",\"$key\");" \
+								(\"$issueID\",\"$COMMENT\",\"$MESSAGE\",\"$issueLink\",\"$key\");" \
 				| sqlite3 $data    # */ save created ticket
 				
 				echo "INFO| $(date)| There is no ticket, but no worries, Zabbix will do for you" >> $logFile			  
 				
 	elif	[ $issueID -eq $issueID ] && [ ${#issueID} -ge 5 ] && [ $DISMISS -ne 1 ] && [ $DISMISS -ne 1 ] ; then
-				$curr/api/updateIssue.api > /dev/null   							# will update existing ticket with MESSAGE var.
+				$curr/api/updateIssue.api > /dev/null		# /* will update existing ticket with MESSAGE var.
 				echo "INFO| $(date)| Ticket $issueID is updated" >> $logFile
 	elif	[ $issueID -eq $issueID ] && [ ${#issueID} -ge 5 ] && [ $DISMISS -eq 1 ] ; then
-				req=$(${curr}/api/dismissIssue.api) 		  # will dismiss this ticket if Resolve by Zabbix.
-				# /* Control return message from Jira
+				req=$(${curr}/api/dismissIssue.api)		# /*  will dismiss this ticket if Resolve by Zabbix.
 				if	[ ${#req} -gt 0 ] &&
 					[ $(echo $req | jq '.errorMessages | length' ) -eq 0 ] ; then
 					echo "ERROR $(date)| $req" && exit 1
-				fi								# will dismiss this ticket if Resolve by Zabbix.
-				echo "delete from issues where issueID=$issueID;" | sqlite3 $data
+				fi
+				#echo "delete from issues where issueID=$issueID;" | sqlite3 $data
 				echo "INFO| $(date)| Well done. Zabbix found $issueID issue is not relavant anymore" >> $logFile
 	elif	[ $issueID -eq 1 ]; then	
-				echo "ERROR| $(date)| Some ERROR. Please check what your dummy script !!! " >> $logFile
+				echo "ERROR| $(date)| Some ERROR. IssueID is = $issueID. Please check what your dummy script !!! " >> $logFile
 	fi
 }
 
