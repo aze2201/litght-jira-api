@@ -10,7 +10,7 @@ while getopts "a:N:e:m:t:I:P:c:d:U:C:" opt; do
     case $opt in
 		a)	ACCOUNTID="$OPTARG"
 			;;
-		N)  FULL_NAME="$OPTARG"
+		N)	FULL_NAME="$OPTARG"
 			;;
 		e)	EMAIL="$OPTARG"
 			;;
@@ -18,7 +18,7 @@ while getopts "a:N:e:m:t:I:P:c:d:U:C:" opt; do
 			;;
 		t)	TOKEN="$OPTARG"
 			;;
-		I)  ISSUE_TYPE="$OPTARG"
+		I)	ISSUE_TYPE="$OPTARG"
 			;;
 		P)	PROJECT_KEY="$OPTARG"
 			;;
@@ -28,7 +28,7 @@ while getopts "a:N:e:m:t:I:P:c:d:U:C:" opt; do
 			;;
 		d)	DISMISS="$OPTARG"
 			;;
-		h)  helpFlag="$OPTARG"
+		h)	helpFlag="$OPTARG"
 			;;
     esac
 done
@@ -51,7 +51,8 @@ helpFunction() {
 	echo "LIMITED OPERAIONS WITH JIRA API V3"
 	echo ""
 	echo "Author: Fariz Muradov"
-	echo "Mail: fariz.muradov@inno2grid.com"
+	echo "Mail: aze2201@gmail.com, fariz.muradov90@gmail.com"
+	echo "Contact: https://www.linkedin.com/in/fariz-muradov-b100a268"
 	echo ""
 	echo "-a		Account ID"
 	echo "-N		Full Name, this ususally need when you make ticket"
@@ -122,8 +123,8 @@ checkTicketExist() {
 	ret=$?
 	[ $ret -ne 0 ] && echo "ERROR| $(date)| Somehow reading database is ERROR" >> $logFile ;
 	[ $ret -ne 0 ] && exit 1
-	[ "$issueID" == "null" ] && issueID=0
-	[ ${#issueID} -eq 0 ] && issueID=0		# * no ticket exist. Need to create
+	[ "$issueID" == "null" ] && issueID=0		# /* SQLite return message control.
+	[ ${#issueID} -eq 0 ] && issueID=0		# /* no ticket exist. Need to create
 	if  [ ${#issueID} -ge 5 ] && 
 		[[ ${issueID} == ?(-)+([[:digit:]]) ]]; then
 			issueID=$issueID                           	 
@@ -136,7 +137,7 @@ installPackages() {
 	repoUpdate=0
 	for i in $(cat requirements.txt ); do
 		if [ ! -f $(which  ${i}) ]; then
-			if [ $repoUpdate -eq 0 ]; then sudo apt-get update; repoUpdate=1 ; fi   ## No need to apt update for each package
+			if [ $repoUpdate -eq 0 ]; then sudo apt-get update; repoUpdate=1 ; fi   # /* No need to apt update for each package
 			echo "$i package not found. Going to install"
 			sudo apt-get install $i -y
 		fi
@@ -145,9 +146,9 @@ installPackages() {
 
 
 main() {
-	# Main scenario here.
-	installPackages
-	initDB
+	# /* Main scenario here.
+	installPackages		# /* Install packages from requirement.txt file.
+	initDB      		# /* Initialize Database
 	export issueID=$(checkTicketExist)
 	echo "Here is issueID: $issueID"
 	if		[ $issueID -eq 0 ] && [ $DISMISS -ne 1 ]; then
