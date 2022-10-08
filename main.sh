@@ -167,7 +167,12 @@ main() {
 				$curr/api/updateIssue.api > /dev/null   							# will update existing ticket with MESSAGE var.
 				echo "INFO| $(date)| Ticket $issueID is updated" >> $logFile
 	elif	[ $issueID -eq $issueID ] && [ ${#issueID} -ge 5 ] && [ $DISMISS -eq 1 ] ; then
-				$curr/api/dismissIssue.api								# will dismiss this ticket if Resolve by Zabbix.
+				req=$(${curr}/api/dismissIssue.api) 		  # will dismiss this ticket if Resolve by Zabbix.
+				# /* Control return message from Jira
+				if	[ ${#req} -gt 0 ] &&
+					[ $(echo $req | jq '.errorMessages | length' ) -eq 0 ] ; then
+					echo "ERROR $(date)| $req" && exit 1
+				fi								# will dismiss this ticket if Resolve by Zabbix.
 				echo "delete from issues where issueID=$issueID;" | sqlite3 $data
 				echo "INFO| $(date)| Well done. Zabbix found $issueID issue is not relavant anymore" >> $logFile
 	elif	[ $issueID -eq 1 ]; then	
